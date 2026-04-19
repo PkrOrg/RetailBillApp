@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Retail Billing App</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    input, button {
+      padding: 8px;
+      margin: 5px;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 15px;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    th {
+      background: #eee;
+    }
+
+    .total-box {
+      margin-top: 15px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .btn {
+      cursor: pointer;
+    }
+
+    .btn-add {
+      background: green;
+      color: white;
+    }
+
+    .btn-save {
+      background: blue;
+      color: white;
+    }
+
+    .btn-print {
+      background: orange;
+      color: white;
+    }
+
+    .btn-delete {
+      background: red;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<h2>🛒 Retail Billing System</h2>
+
+<input type="text" id="customer" placeholder="Customer Name" value="Prasanna">
+
+<input type="text" id="phone" placeholder="Phone Number" value="4566">
+<h3>Add Product</h3>
+
+<input type="text" id="item" placeholder="Item Name" value="ABC">
+<input type="number" id="qty" placeholder="Qty" value="2">
+<input type="number" id="price" placeholder="Price" value="2">
+
+<button class="btn btn-add" onclick="addItem()">Add Item</button>
+
+<table id="cartTable">
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Qty</th>
+      <th>Price</th>
+      <th>Total</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<div class="total-box">
+  Grand Total: ₹ <span id="grandTotal">0</span>
+</div>
+
+<br>
+
+<button class="btn btn-save" onclick="saveBill()">💾 Save Bill</button>
+<button class="btn btn-print" onclick="printBill()">🧾 Print</button>
+
+<script>
+let cart = [];
+const API_URL = "https://script.google.com/macros/s/AKfycbzb705LWMxHhLasQiVbMwM6PPNMTJW3bNDBIbl_GNgTvSItL2gMMgeYb_oW9Fj_xj4fYQ/exec";
+
+// Add item to cart
+function addItem() {
+  let item = document.getElementById("item").value;
+  let qty = parseInt(document.getElementById("qty").value);
+  let price = parseFloat(document.getElementById("price").value);
+
+  if (!item || !qty || !price) {
+    alert("Enter all fields");
+    return;
+  }
+
+  let total = qty * price;
+
+  cart.push({ item, qty, price, total });
+  renderCart();
+}
+
+// Render cart table
+function renderCart() {
+  let tbody = document.querySelector("#cartTable tbody");
+  tbody.innerHTML = "";
+
+  cart.forEach((c, index) => {
+    let row = `
+      <tr>
+        <td>${c.item}</td>
+        <td>${c.qty}</td>
+        <td>Rs.${c.price}</td>
+        <td>Rs.${c.total}</td>
+        <td>
+          <button class="btn btn-delete" onclick="deleteItem(${index})">X</button>
+        </td>
+      </tr>
+    `;
+    tbody.innerHTML += row;
+  });
+
+  updateTotal();
+}
+
+// Delete item
+function deleteItem(index) {
+  cart.splice(index, 1);
+  renderCart();
+}
+
+// Update total
+function updateTotal() {
+  let total = cart.reduce((sum, item) => sum + item.total, 0);
+  document.getElementById("grandTotal").innerText = total;
+}
+
+// Save bill to Google Sheets
+function saveBill() {
+  console.time("processTime");
+  let customer = document.getElementById("customer").value;
+  let phone = document.getElementById("phone").value;
+  let total = document.getElementById("grandTotal").innerText;
+
+  if (cart.length === 0) {
+    alert("Cart is empty");
+    return;
+  }
+
+  let items = cart.map(i => ` _x${i.item} _x${i.qty} _x${i.total}`).join(", ");
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      issuedBy: "PKR",
+      sheet: "2025",
+      customer: customer,
+      phone: phone,
+      items: items,
+      total: total
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert("Bill Saved Successfully!");
+    console.timeLog("myTimer", "Step 1 complete");
+    console.timeEnd("processTime");
+    location.reload();
+  })
+  .catch(err => {
+    alert("Error saving bill");
+    console.error(err);
+  });
+}
+
+// Print bill
+function printBill() {
+  window.print();
+}
+</script>
+
+</body>
+</html>
