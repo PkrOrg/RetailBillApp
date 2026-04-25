@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Billing App</title>
+  <style>
+.btn {
+      width: 300px;
+      display: block;
+      text-decoration: none;
+      margin: 15px 0;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+    }
+    .btn-bill { background: #007bff; }
+    .btn-display { background: #ff5722; }
+    .btn-logout { background: green; }
+    body {
+      font-family: Arial;
+      background: #f5f7fb;
+    }
+    .card {
+      width: 320px;
+      margin: 80px auto;
+      padding: 20px;
+      background: #F7D9BC;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 60%;
+      padding: 10px;
+      margin: 8px 0;
+    }
+    button {
+      width: 67%;
+      padding: 10px;
+      margin-top: 10px;
+      background: green;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      margin-top: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="card" id="loginPage">
+  <h2>Login</h2>
+  <input id="username" type="text" placeholder="Username" value="prasanna">
+  <input id="password" type="password" placeholder="Password" value="prasanna">
+  <a class="btn btn-logout" style="width: 60%; margin-left: 52px;" href="" onclick="login()">Login</a>
+  <p id="error" style="color:red;"></p>
+</div>
+
+<!-- DASHBOARD -->
+<div class="card hidden" id="dashboardPage">
+  <h2>Dashboard</h2>
+    <a href="bill.html" class="btn btn-bill">🧾 Billing Page</a>
+    <a href="display.html" class="btn btn-display">📄 View All Bills</a>
+    <a class="btn btn-logout" href="" onclick="logout()">Logout</a>
+</div>
+
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbzb705LWMxHhLasQiVbMwM6PPNMTJW3bNDBIbl_GNgTvSItL2gMMgeYb_oW9Fj_xj4fYQ/exec";
+
+// PAGE SWITCHING
+function hideAll() {
+  document.getElementById("loginPage").classList.add("hidden");
+  document.getElementById("dashboardPage").classList.add("hidden");
+}
+
+function showDashboard() {
+  document.getElementById("loginPage").classList.add("hidden");
+  document.getElementById("dashboardPage").classList.remove("hidden");
+}
+
+// LOGIN
+async function login() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  const res = await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "login",
+      username,
+      password
+    })
+  });
+
+  const data = await res.json();
+
+  if (!data.success) {
+    localStorage.setItem("loggedIn", "true");
+    showDashboard();
+  } else {
+    document.getElementById("error").innerText = "Invalid login";
+  }
+}
+
+// LOGOUT
+function logout() {
+  localStorage.removeItem("loggedIn");
+  hideAll();
+  document.getElementById("loginPage").classList.remove("hidden");
+}
+
+
+// AUTO LOGIN CHECK
+window.onload = function () {
+  if (localStorage.getItem("loggedIn")) {
+    showDashboard();
+  }
+};
+</script>
+
+</body>
+</html>
