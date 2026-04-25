@@ -2,25 +2,13 @@
 <html>
 <head>
   <title>Billing App</title>
+
   <style>
-.btn {
-      width: 300px;
-      display: block;
-      text-decoration: none;
-      margin: 15px 0;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-      color: white;
-    }
-    .btn-bill { background: #007bff; }
-    .btn-display { background: #ff5722; }
-    .btn-logout { background: green; }
     body {
       font-family: Arial;
       background: #f5f7fb;
     }
+
     .card {
       width: 320px;
       margin: 80px auto;
@@ -30,60 +18,209 @@
       text-align: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
+
     input {
-      width: 60%;
+      width: 80%;
       padding: 10px;
       margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
+
     button {
-      width: 67%;
-      padding: 10px;
-      margin-top: 10px;
+      width: 80%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
       background: green;
       color: white;
-      border: none;
+      font-size: 16px;
       cursor: pointer;
     }
-    table {
-      width: 100%;
-      margin-top: 10px;
+    .btn {
+      width: 80%;
+      display: block;
+      margin: 12px auto;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      background: green;
     }
+
+    .btn-bill { background: #007bff; }
+    .btn-display { background: #ff5722; }
+    .btn-logout { background: green; }
+
     .hidden {
       display: none;
     }
+  .box {
+      background: #F2D3BC;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 300px;
+    }
+
+#loading {
+  margin-top: 10px;
+  font-size: 24px;
+  color: #007bff;
+}
+/* Container */
+.dashboard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  background: linear-gradient(135deg, #eef2f7, #d9e4f5);
+  font-family: Arial, sans-serif;
+}
+
+/* Card */
+.card {
+  background: #F2D3BC;
+  padding: 40px;
+  border-radius: 16px;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* Title */
+.title {
+  margin-bottom: 25px;
+  color: #333;
+}
+
+/* Buttons layout */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* Buttons */
+.btn {
+  display: block;
+  padding: 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+/* Button Variants */
+.btn-primary {
+  background: #4CAF50;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #45a049;
+}
+
+.btn-secondary {
+  background: #2196F3;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #1e88e5;
+}
+
+.btn-logout {
+  background: #f44336;
+  color: white;
+  border: none;
+  width: 88%;
+  cursor: pointer;
+}
+
+.btn-logout:hover {
+  background: #d32f2f;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .card {
+    width: 90%;
+  }
+}
+.hidden {
+      display: none;
+    }
+ .error {
+      color: red;
+      font-size: 18px;
+      padding: 15px;
+    }
   </style>
 </head>
+
 <body>
 
 <!-- LOGIN -->
-<div class="card" id="loginPage">
-  <h2>Login</h2>
-  <input id="username" type="text" placeholder="Username" value="prasanna">
-  <input id="password" type="password" placeholder="Password" value="prasanna">
-  <a class="btn btn-logout" style="width: 60%; margin-left: 52px;" href="" onclick="login()">Login</a>
-  <p id="error" style="color:red;"></p>
-</div>
+ <div id="loginBox" class="box">
+	<div id="loading" class="hidden"><img src="https://i.gifer.com/ZKZg.gif" width="24" height="24" alt="⏳"> Logging in...</div>
+    <h1 style="color:blue" >RETAIL BILLING APP</h1>
+	<h2>🔐 Login</h2>
+
+    <input type="text" id="username" placeholder="Username" value="prasanna">
+    <input type="password" id="password" placeholder="Password" value="prasanna">
+
+    <button onclick="handleLogin(event)">Login</button>
+    <div id="error" class="error"></div>
+  </div>
 
 <!-- DASHBOARD -->
-<div class="card hidden" id="dashboardPage">
-  <h2>Dashboard</h2>
-    <a href="bill.html" class="btn btn-bill">🧾 Billing Page</a>
-    <a href="display.html" class="btn btn-display">📄 View All Bills</a>
-    <a class="btn btn-logout" href="" onclick="logout()">Logout</a>
-</div>
+<div class="dashboard hidden" id="dashboardPage">
+  <div class="card">
+    <h2 class="title">📊 Dashboard</h2>
 
+    <div class="actions">
+      <a href="retail.html" class="btn btn-primary">
+        🧾 Billing Page
+      </a>
+
+      <a href="display.html" class="btn btn-secondary">
+        📄 View All Bills
+      </a>
+    </div>
+
+    <button class="btn btn-logout" onclick="logout()">
+      🚪 Logout
+    </button>
+  </div>
+</div>
 
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbzb705LWMxHhLasQiVbMwM6PPNMTJW3bNDBIbl_GNgTvSItL2gMMgeYb_oW9Fj_xj4fYQ/exec";
 
-// PAGE SWITCHING
+// HANDLE FORM SUBMIT
+async function handleLogin(event) {
+  event.preventDefault();
+  document.getElementById("loading").classList.remove("hidden"); // show loader
+  login();
+}
+
+// PAGE CONTROL
 function hideAll() {
-  document.getElementById("loginPage").classList.add("hidden");
+
+  document.getElementById("error").classList.add("hidden");
+  document.getElementById("loginBox").classList.add("hidden");
   document.getElementById("dashboardPage").classList.add("hidden");
 }
 
 function showDashboard() {
-  document.getElementById("loginPage").classList.add("hidden");
+  hideAll();
   document.getElementById("dashboardPage").classList.remove("hidden");
 }
 
@@ -91,35 +228,36 @@ function showDashboard() {
 async function login() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
-
-  const res = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "login",
-      username,
-      password
-    })
+  
+  const payload = new URLSearchParams({
+    action: 'login',
+    username: username,
+    password: password
   });
 
-  const data = await res.json();
+  fetch(API_URL, { method: "POST", body: payload })
+    .then(r => r.json())
+    .then(data => {
+     
 
-  if (!data.success) {
-    localStorage.setItem("loggedIn", "true");
-    showDashboard();
-  } else {
-    document.getElementById("error").innerText = "Invalid login";
-  }
+    if (data.success) {
+      localStorage.setItem("loggedIn", "true");
+      showDashboard();
+    } else {
+      document.getElementById("error").innerText = "Invalid login";
+    }
+
+ document.getElementById("loading").classList.add("hidden"); // hide loader
+  });
 }
-
 // LOGOUT
 function logout() {
   localStorage.removeItem("loggedIn");
   hideAll();
-  document.getElementById("loginPage").classList.remove("hidden");
+  document.getElementById("loginBox").classList.remove("hidden");
 }
 
-
-// AUTO LOGIN CHECK
+// AUTO LOGIN
 window.onload = function () {
   if (localStorage.getItem("loggedIn")) {
     showDashboard();
